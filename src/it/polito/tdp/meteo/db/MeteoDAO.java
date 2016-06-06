@@ -13,11 +13,13 @@
 package it.polito.tdp.meteo.db;
 
 import it.polito.tdp.meteo.bean.Situazione;
+import it.polito.tdp.meteo.bean.UmiditaCitta;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.Month;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -51,7 +53,7 @@ public class MeteoDAO {
 			while (rs.next()) {
 
 				Situazione s = new Situazione(rs.getString("Localita"),
-						rs.getDate("Data"), rs.getInt("Tmedia"),
+						rs.getDate("Data").toLocalDate(), rs.getInt("Tmedia"),
 						rs.getInt("Tmin"), rs.getInt("Tmax"),
 						rs.getInt("Puntorugiada"), rs.getInt("Umidita"),
 						rs.getInt("Visibilita"), rs.getInt("Ventomedia"),
@@ -66,6 +68,42 @@ public class MeteoDAO {
 			throw new RuntimeException(e);
 		}
 	}
+	
+	
+	public List<UmiditaCitta> getUmiditaMedia(Month m) {
+
+		final String sql = "select Localita, avg(umidita) as umiditamedia " + 
+				"from situazione " + 
+				"where Month(Data)=? " + 
+				"group by Localita";
+
+		List<UmiditaCitta> lista = new ArrayList<UmiditaCitta>();
+
+		try {
+			Connection conn = DBConnect.getInstance().getConnection();
+			PreparedStatement st = conn.prepareStatement(sql);
+			
+			st.setInt(1, m.getValue());
+
+			ResultSet rs = st.executeQuery();
+
+			while (rs.next()) {
+
+				UmiditaCitta u = new UmiditaCitta(
+						rs.getString("localita"),
+						rs.getDouble("umiditamedia")
+						);
+				lista.add(u);
+			}
+			
+			conn.close();
+			return lista;
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw new RuntimeException(e);
+		}
+	}
+
 
 	/**
 	 * Test method for class {@link MeteoDAO}
