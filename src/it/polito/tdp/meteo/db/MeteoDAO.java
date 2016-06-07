@@ -12,6 +12,7 @@
 
 package it.polito.tdp.meteo.db;
 
+import it.polito.tdp.meteo.bean.CittaData;
 import it.polito.tdp.meteo.bean.Situazione;
 import it.polito.tdp.meteo.bean.UmiditaCitta;
 
@@ -21,7 +22,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.Month;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Classe DAO per l'accesso al database {@code meteo}
@@ -121,6 +124,62 @@ public class MeteoDAO {
 					s.getLocalita(), s.getData(), s.getTMin(), s.getTMax(), s.getUmidita(), s.getFenomeni()) ;
 		}
 
+	}
+
+
+	public List<String> getElencoCitta() {
+		String sql = "select distinct Localita from situazione";
+		
+		List<String> list = new ArrayList<String>() ;
+		
+		try {
+			Connection conn = DBConnect.getInstance().getConnection() ;
+
+			PreparedStatement st = conn.prepareStatement(sql) ;
+			
+			ResultSet rs = st.executeQuery() ;
+			
+			while(rs.next()) {
+				list.add(rs.getString("localita")) ;
+			}
+			
+			conn.close();
+			
+			return list ;
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return null ;
+		}
+		
+	}
+
+
+	public Map<CittaData, Double> getElencoUmidita() {
+		String sql = "select Localita, `Data`, Umidita  from situazione";
+		
+		Map<CittaData, Double> map = new HashMap<>() ;
+		
+		try {
+			Connection conn = DBConnect.getInstance().getConnection() ;
+
+			PreparedStatement st = conn.prepareStatement(sql) ;
+			
+			ResultSet rs = st.executeQuery() ;
+			
+			while(rs.next()) {
+				map.put(new CittaData(rs.getString("localita"), rs.getDate("data").toLocalDate()),
+						rs.getDouble("umidita")) ;
+			}
+			
+			conn.close();
+			
+			return map ;
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return null ;
+		}
 	}
 
 }

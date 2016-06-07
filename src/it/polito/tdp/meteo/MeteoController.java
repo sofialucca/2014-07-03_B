@@ -3,6 +3,7 @@ package it.polito.tdp.meteo;
 import java.net.URL;
 import java.time.Month;
 import java.util.List;
+import java.util.Map;
 import java.util.ResourceBundle;
 
 import it.polito.tdp.meteo.bean.Model;
@@ -38,7 +39,19 @@ public class MeteoController {
     @FXML
     void doCalcola(ActionEvent event) {
     	
+    	Month m = boxMese.getValue() ;
     	
+    	if(m==null) {
+    		txtResult.appendText("Devi selezionare un mese\n");
+    		return ;
+    	}
+    	
+    	Map<Integer,String> map = model.ricercaViaggio(m) ;
+    	
+    	for(Integer g : map.keySet()) {
+    		txtResult.appendText(String.format("Giorno %d -> Città %s\n",
+    				g, map.get(g)));
+    	}
 
     }
 
