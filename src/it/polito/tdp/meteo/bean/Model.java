@@ -91,7 +91,7 @@ public class Model {
 		for(int giorno = 1; giorno<=ldom; giorno++) {
 			String cittaOggi = viaggio.get(giorno) ;
 
-			if( !cittaOggi.equals(cittaIeri)) {
+			if( cittaIeri!=null && !cittaOggi.equals(cittaIeri)) {
 				costo += C ;
 			}
 			cittaIeri = cittaOggi ;

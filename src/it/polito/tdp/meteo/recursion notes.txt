@@ -1,0 +1,27 @@
+DEFINIZIONE: LDOM (last day of month)
+numero dell'ultimo giorno utile del mese selezionato (28/30/31)
+
+Risultato della ricorsione:
+Vettore di LDOM elementi
+che corrispondono ai giorni del mese selezionato
+in cui ciascun elemento contiene
+la città in cui recarsi in quel giorno
+Es: [TO, MI, MI, MI, GE, GE, TO, ...]
+Map<Integer, String>
+ArrayList<String>
+
+Passo della ricorsione (Step):
+Giorno del mese a cui sono arrivato.
+I giorni da 1 a Step-1 sono già definiti
+Il giorno Step è da definire in questo livello della ricorsione
+I giorni da Step+1 in poi non mi interessano
+Step: da 1 a LDOM
+
+Soluzione parziale (es. Step=3)
+[1:TO, 2:MI, 3:??, ...]
+
+Generazione delle soluzioni dello step successivo:
+"prova" ad aggiungere nel giorno Step ciascuna delle (3) città, purché non abbiano ancora raggiunto le 12 presenze
+
+Condizione di terminazione: Step=LDOM+1
+Alla terminazione calcola la funzione di costo, e se è migliore della precedente, memorizza la soluzione trovata.
